@@ -8,11 +8,11 @@ This project implements a **FastAPI** backend API serving a **Scikit-Learn Rando
 
 ## 🚀 Key Highlights for Interviewers
 
-* **Production-Ready Architecture:** Clean separation of concerns between the Machine Learning model training pipeline, the RESTful FastAPI backend, and the interactive Streamlit user interface.
-* **On-the-Fly Feature Engineering:** The backend API dynamically generates model features (`charges_per_month` and `freq_drop_off`) from raw input data on the fly before running inferences.
-* **Tiered Retention Intervention System:** Instead of just outputting binary predictions, the engine suggests high-value retention workflows dynamically customized to the member's risk level.
-* **Input Validation & Safety:** Leveraging **Pydantic** for rigorous type checking, data validation, and documentation generation.
-* **Interactive UI:** A highly intuitive frontend built in Streamlit featuring real-time visual alerts and metrics based on model outputs.
+- **Production-Ready Architecture:** Clean separation of concerns between the Machine Learning model training pipeline, the RESTful FastAPI backend, and the interactive Streamlit user interface.
+- **On-the-Fly Feature Engineering:** The backend API dynamically generates model features (`charges_per_month` and `freq_drop_off`) from raw input data on the fly before running inferences.
+- **Tiered Retention Intervention System:** Instead of just outputting binary predictions, the engine suggests high-value retention workflows dynamically customized to the member's risk level.
+- **Input Validation & Safety:** Leveraging **Pydantic** for rigorous type checking, data validation, and documentation generation.
+- **Interactive UI:** A highly intuitive frontend built in Streamlit featuring real-time visual alerts and metrics based on model outputs.
 
 ---
 
@@ -22,7 +22,7 @@ This project implements a **FastAPI** backend API serving a **Scikit-Learn Rando
 graph TD
     User([Gym Operator / Manager]) -->|Interacts| Dashboard[Streamlit Dashboard]
     DashboardClient[Dashboard HTTP Client] -->|POST Request with JSON Payload| Gateway[FastAPI Backend /docs]
-    
+
     subgraph FastAPI Microservice [Port 8000]
         Gateway -->|Pydantic Schema Validation| Validator{MemberData Schema}
         Validator -->|Valid JSON| FeatureEngine[Feature Engineering Engine]
@@ -49,11 +49,35 @@ The backend utilizes a **Random Forest Classifier** trained on fitness customer 
 2. **Monthly Spend Ratio (`charges_per_month`):** Normalizes member spending by lifetime (`Avg_additional_charges_total` / `Lifetime + 1`) to detect financial engagement level.
 
 ### Tiered Action Logic
+
 Depending on the predicted risk probability, the backend routes the user to a tailored retention action:
-* **Probability > 85%**: `Immediate 1:1 'Motivation Check-in' Call from Head Trainer`
-* **Probability > 60%**: `Offer 2 Free Guest Passes for Friends`
-* **Probability <= 60% (but High Risk)**: `Send 'We Miss You' Discounted Membership Email`
-* **Low Risk**: `No Action Needed`
+
+- **Probability > 85%**: `Immediate 1:1 'Motivation Check-in' Call from Head Trainer`
+- **Probability > 60%**: `Offer 2 Free Guest Passes for Friends`
+- **Probability <= 60% (but High Risk)**: `Send 'We Miss You' Discounted Membership Email`
+- **Low Risk**: `No Action Needed`
+
+---
+
+## 📊 Model Performance & Evaluation Metrics
+
+The production model is a **Random Forest Classifier** optimized for predicting member churn. The model was trained and evaluated on a holdout test set (800 members), yielding the following performance metrics:
+
+- **Overall Test Accuracy:** `96.62%`
+
+### Classification Report
+
+| Metric        | Class 0 (Retained Member) | Class 1 (Churned Member) | Macro Avg | Weighted Avg |
+| :------------ | :-----------------------: | :----------------------: | :-------: | :----------: |
+| **Precision** |          `0.97`           |          `0.96`          |  `0.96`   |    `0.97`    |
+| **Recall**    |          `0.99`           |          `0.91`          |  `0.95`   |    `0.97`    |
+| **F1-Score**  |          `0.98`           |          `0.93`          |  `0.96`   |    `0.97`    |
+| **Support**   |           `588`           |          `212`           |   `800`   |    `800`     |
+
+### Key Takeaways:
+
+- **High Precision for Churn (0.96):** Minimizes false positives, ensuring marketing and retention budgets (discounts, head trainer calls) are not wasted on stable members.
+- **Strong Recall for Churn (0.91):** Ensures that 91% of at-risk members are successfully identified and engaged before they cancel their membership.
 
 ---
 
@@ -83,12 +107,14 @@ fitness-retention-and-churn-engine/
 Follow these steps to run the application locally:
 
 ### 1. Clone & Navigate to the Project
+
 ```bash
 git clone <repository-url>
 cd fitness-retention-and-churn-engine
 ```
 
 ### 2. Create a Virtual Environment
+
 ```bash
 # Windows
 python -m venv venv
@@ -100,6 +126,7 @@ source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -111,27 +138,34 @@ pip install -r requirements.txt
 For the best experience, start both the backend API and frontend dashboard.
 
 ### Step 1: Run the Backend API
+
 Start the FastAPI server on port `8000` using Uvicorn:
+
 ```bash
 python main.py
 ```
-* The API will be active locally at: `http://127.0.0.1:8000` (production: `https://fitness-retention-churn-engine.onrender.com`)
-* You can access the auto-generated **Swagger Interactive Documentation** at: `http://127.0.0.1:8000/docs` (production: `https://fitness-retention-churn-engine.onrender.com/docs`)
+
+- The API will be active locally at: `http://127.0.0.1:8000` (production: `https://fitness-retention-churn-engine.onrender.com`)
+- You can access the auto-generated **Swagger Interactive Documentation** at: `http://127.0.0.1:8000/docs` (production: `https://fitness-retention-churn-engine.onrender.com/docs`)
 
 ### Step 2: Run the Streamlit Dashboard
+
 In a new terminal window (with the virtual environment activated), run:
+
 ```bash
 streamlit run dashboard.py
 ```
-* The dashboard will open automatically in your default web browser (typically at `http://localhost:8501`).
+
+- The dashboard will open automatically in your default web browser (typically at `http://localhost:8501`).
 
 ---
 
 ## 📡 API Reference
 
 ### 1. Root Check
-* **Endpoint:** `GET /`
-* **Response:**
+
+- **Endpoint:** `GET /`
+- **Response:**
   ```json
   {
     "status": "online",
@@ -140,8 +174,9 @@ streamlit run dashboard.py
   ```
 
 ### 2. Predict Churn Risk
-* **Endpoint:** `POST /api/predict-churn/`
-* **Request Body Schema (`application/json`):**
+
+- **Endpoint:** `POST /api/predict-churn/`
+- **Request Body Schema (`application/json`):**
   ```json
   {
     "Near_Location": 1,
@@ -157,7 +192,7 @@ streamlit run dashboard.py
     "Avg_class_frequency_current_month": 1.9
   }
   ```
-* **Sample Response:**
+- **Sample Response:**
   ```json
   {
     "churn_risk": "HIGH",
