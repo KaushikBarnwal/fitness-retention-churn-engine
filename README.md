@@ -115,8 +115,8 @@ Start the FastAPI server on port `8000` using Uvicorn:
 ```bash
 python main.py
 ```
-* The API will be active at: `http://127.0.0.1:8000`
-* You can access the auto-generated **Swagger Interactive Documentation** at: `http://127.0.0.1:8000/docs`
+* The API will be active locally at: `http://127.0.0.1:8000` (production: `https://fitness-retention-churn-engine.onrender.com`)
+* You can access the auto-generated **Swagger Interactive Documentation** at: `http://127.0.0.1:8000/docs` (production: `https://fitness-retention-churn-engine.onrender.com/docs`)
 
 ### Step 2: Run the Streamlit Dashboard
 In a new terminal window (with the virtual environment activated), run:

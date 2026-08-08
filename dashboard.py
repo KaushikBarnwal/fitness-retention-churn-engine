@@ -1,5 +1,8 @@
 import streamlit as st
 import requests
+import os
+
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://127.0.0.1:8000").rstrip("/")
 
 st.set_page_config(page_title="Fitness Churn Engine", page_icon="🏋️", layout="wide")
 
@@ -45,7 +48,7 @@ if submit_button:
     }
     try:
         # Call the correct FastAPI endpoint
-        response = requests.post("http://127.0.0.1:8000/api/predict-churn/", json=payload)
+        response = requests.post(f"{BACKEND_URL}/api/predict-churn/", json=payload)
         
         if response.status_code == 200:
             result = response.json()
